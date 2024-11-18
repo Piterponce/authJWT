@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empleados</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Empleados</h1>
+
+  <!-- Formulario para login -->
+  <div id="loginForm">
+    <h2>Iniciar sesión</h2>
+    <input type="text" id="username" placeholder="Usuario">
+    <input type="password" id="password" placeholder="Contraseña">
+    <button onclick="login()">Login</button>
+  </div>
+
+  <!-- Mostrar empleados -->
+  <div id="employeeList" style="display:none;">
+    <button onclick="getEmployees()">Ver empleados</button>
+    <ul id="employees"></ul>
+  </div>
+
+  <script>
+    let token = ''; // Variable para almacenar el token
+
+    // Función para realizar login
+    async function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }) // Enviar los datos en JSON
+      });
+
+      const data = await response.json();
+      if (data.token) {
+        token = data.token; // Guardar el token en la variable
+        alert('Login exitoso');
+        document.getElementById('loginForm').style.display = 'none'; // Ocultar formulario de login
+        document.getElementById('employeeList').style.display = 'block'; // Mostrar lista de empleados
+      } else {
+        alert('Error de login');
+      }
+    }
+
+    // Función para obtener empleados (solo si el login es exitoso)
+    async function getEmployees() {
+      const response = await fetch('/api/empleados', {
+        method: 'GET',
+        headers: { 'Authorization': `Bearer ${token}` } // Enviar token en los headers
+      });
+
+      const data = await response.json();
+      const employeeList = document.getElementById('employees');
+      employeeList.innerHTML = ''; // Limpiar la lista actual
+      data.forEach(employee => {
+        const li = document.createElement('li');
+        li.textContent = `ID: ${employee.id}, Nombre: ${employee.first_name} ${employee.last_name}`;
+        employeeList.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
+
