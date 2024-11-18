@@ -2,10 +2,18 @@ const express = require('express');
 const router = express.Router();
 const employeeController = require('../controllers/employeeController');
 const authenticateToken = require('../middleware/auth');
-const pool = require('../config/db'); // Asegúrate de importar la conexión a la base de datos
+const pool = require('../config/db'); // Importar la conexión a la base de datos
 
 // Ruta para obtener todos los empleados
-router.get('/empleados', authenticateToken, employeeController.getAllEmployees);
+router.get('/empleados', authenticateToken, async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM employees'); // Asegúrate de que el nombre de tu tabla es 'employees'
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error al obtener empleados:', error);
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
+});
 
 // Ruta para obtener un empleado por ID
 router.get('/empleados/:id', authenticateToken, async (req, res) => {
@@ -51,4 +59,5 @@ router.put('/empleados/:id', authenticateToken, async (req, res) => {
 });
 
 module.exports = router;
+
 

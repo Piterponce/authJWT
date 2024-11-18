@@ -12,9 +12,8 @@ app.use(express.json());
 // Rutas
 app.use('/api', employeeRoutes);
 
-// Ruta de prueba para generar un token (en un sistema real, esto iría en un controlador de autenticación)
 app.post('/login', (req, res) => {
-    // Simulación de usuario
+    
     const user = { id: 1, username: 'admin' };
     const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1h'
 });

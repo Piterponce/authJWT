@@ -24,7 +24,7 @@
   </div>
 
   <script>
-    let token = ''; // Variable para almacenar el token
+    let token = '';
 
     // Función para realizar login
     async function login() {
@@ -34,30 +34,30 @@
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }) // Enviar los datos en JSON
+        body: JSON.stringify({ username, password }) 
       });
 
       const data = await response.json();
       if (data.token) {
-        token = data.token; // Guardar el token en la variable
+        token = data.token; 
         alert('Login exitoso');
-        document.getElementById('loginForm').style.display = 'none'; // Ocultar formulario de login
-        document.getElementById('employeeList').style.display = 'block'; // Mostrar lista de empleados
+        document.getElementById('loginForm').style.display = 'none'; 
+        document.getElementById('employeeList').style.display = 'block'; 
       } else {
         alert('Error de login');
       }
     }
 
-    // Función para obtener empleados (solo si el login es exitoso)
+ 
     async function getEmployees() {
       const response = await fetch('/api/empleados', {
         method: 'GET',
-        headers: { 'Authorization': `Bearer ${token}` } // Enviar token en los headers
+        headers: { 'Authorization': `Bearer ${token}` } 
       });
 
       const data = await response.json();
       const employeeList = document.getElementById('employees');
-      employeeList.innerHTML = ''; // Limpiar la lista actual
+      employeeList.innerHTML = ''; 
       data.forEach(employee => {
         const li = document.createElement('li');
         li.textContent = `ID: ${employee.id}, Nombre: ${employee.first_name} ${employee.last_name}`;
